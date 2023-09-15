@@ -2,8 +2,10 @@ import numpy as np
 import cv2
 
 cap = cv2.VideoCapture(0)
-face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
+face_cascade = cv2.CascadeClassifier(
+    cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+eye_cascade = cv2.CascadeClassifier(
+    cv2.data.haarcascades + 'haarcascade_eye.xml')
 
 while True:
     ret, frame = cap.read()
@@ -16,7 +18,8 @@ while True:
         roi_color = frame[y:y+h, x:x+w]
         eyes = eye_cascade.detectMultiScale(roi_gray, 1.3, 5)
         for (ex, ey, ew, eh) in eyes:
-            cv2.rectangle(roi_color, (ex, ey), (ex + ew, ey + eh), (0, 255, 0), 5)
+            cv2.rectangle(roi_color, (ex, ey),
+                          (ex + ew, ey + eh), (0, 255, 0), 5)
 
     cv2.imshow('frame', frame)
 
