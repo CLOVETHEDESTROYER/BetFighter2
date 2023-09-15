@@ -10,6 +10,9 @@ from flask import Flask, Response
 from flask_cors import CORS
 from flask import jsonify
 
+app = Flask(__name__)
+CORS(app)
+
 
 def start_server():
     app = Flask(__name__)
