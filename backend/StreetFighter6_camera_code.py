@@ -47,7 +47,7 @@ def video_feed():
     video_path = os.path.join(
         current_directory, "video", "Streetfighter6test.mp4")
     template_path = os.path.join(current_directory, "assets", "WON.png")
-    threshold = 0.80
+    threshold = 0.60
 
     processor = ImageProcessor(template_path, threshold)
 
@@ -66,6 +66,13 @@ def video_feed():
             winner = processor.detect_winner(frame)
             if winner:
                 print(f"{winner} Side Wins")
+                w, h = processor.template.shape[::-1]
+                if winner == 'Left':
+                    top_left = (0, 0)
+                else:
+                    top_left = (frame.shape[1] - w, 0)
+                bottom_right = (top_left[0] + w, top_left[1] + h)
+                cv2.rectangle(frame, top_left, bottom_right, (0, 0, 255), 2)
                 break
 
             ret, buffer = cv2.imencode('.jpg', frame)
@@ -87,7 +94,7 @@ def winner():
     current_directory = os.path.dirname(os.path.abspath(__file__))
     video_path = os.path.join(
         current_directory, "video", "Streetfighter6test.mp4")
-    template_path = os.path.join(current_directory, "assets", "WON.png")
+    template_path = os.path.join(current_directory, "assets", "WONSF6.png")
 
     processor = ImageProcessor(template_path, threshold)
     result = {"winner": "No Winner"}

@@ -47,7 +47,7 @@ def video_feed():
     video_path = os.path.join(
         current_directory, "video", "Streetfighter6test.mp4")
     template_path = os.path.join(current_directory, "assets", "WON.png")
-    threshold = 0.688
+    threshold = 0.6884
 
     processor = ImageProcessor(template_path, threshold)
 
@@ -84,7 +84,7 @@ def video_feed():
 @app.route("/mk")
 def winner():
     frame = None  # Initialize frame to avoid UnboundLocalError
-    threshold = 0.688
+    threshold = 0.68
 
     current_directory = os.path.dirname(os.path.abspath(__file__))
     video_path = os.path.join(

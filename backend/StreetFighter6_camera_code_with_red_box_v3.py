@@ -63,17 +63,17 @@ def video_feed():
             cv2.line(frame, (center_x, 0), (center_x,
                      frame.shape[0]), (0, 255, 0), 2)
 
-            
     winner = processor.detect_winner(frame)
     if winner:
         print(f"{winner} Side Wins")
         # Draw a red box around the detected "WON.png" image
-        w, h = processor.template.shape[::-1]  # Get dimensions of the template image
+        # Get dimensions of the template image
+        w, h = processor.template.shape[::-1]
         top_left = processor.top_left
         bottom_right = (top_left[0] + w, top_left[1] + h)
         cv2.rectangle(frame, top_left, bottom_right, (0, 0, 255), 2)
     yield (b'--frame\r\n'
-                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+           b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
     cap.release()
     cv2.destroyAllWindows()
@@ -107,11 +107,11 @@ def winner():
             response = img_encoded.tobytes()
             data = json.dumps(result)
         cap.release()
-            cv2.destroyAllWindows()
-            return jsonify(result)
+        cv2.destroyAllWindows()
+        return jsonify(result)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-cap.release()
+    cap.release()
     cv2.destroyAllWindows()
     return json.dumps(result)
 
