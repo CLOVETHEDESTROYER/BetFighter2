@@ -9,6 +9,7 @@ import json
 from flask import Flask, Response
 from flask_cors import CORS
 from flask import jsonify
+import openai
 
 app = Flask(__name__)
 CORS(app)

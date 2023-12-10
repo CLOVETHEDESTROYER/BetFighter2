@@ -14,6 +14,7 @@ class ImageProcessor:
         self.threshold = threshold
         self.template = None
         self.load_template()
+        self.top_left = None  # Initialize to None
 
     def load_template(self):
         try:
@@ -35,8 +36,10 @@ class ImageProcessor:
         for region_name, region in regions.items():
             res = cv2.matchTemplate(
                 region, self.template, cv2.TM_CCOEFF_NORMED)
-            max_val = np.max(res)
+            min_val, max_val, min_loc, top_left = cv2.minMaxLoc(res)
+
             if max_val > self.threshold:
+                self.top_left = top_left  # Store the top-left coordinate
                 return region_name
         return None
 
@@ -46,8 +49,8 @@ def video_feed():
     current_directory = os.path.dirname(os.path.abspath(__file__))
     video_path = os.path.join(
         current_directory, "video", "Streetfighter6test.mp4")
-    template_path = os.path.join(current_directory, "assets", "WON.png")
-    threshold = 0.6885
+    template_path = os.path.join(current_directory, "assets", "WONSF6.png")
+    threshold = 0.70
 
     processor = ImageProcessor(template_path, threshold)
 
@@ -68,7 +71,12 @@ def video_feed():
             winner = processor.detect_winner(frame)
             if winner:
                 print(f"{winner} Side Wins")
-                break
+                # Draw a red box around the detected "WON.png" image
+                w, h = processor.template.shape[::-1]
+                top_left = processor.top_left  # Get the stored top-left coordinate
+                bottom_right = (top_left[0] + w, top_left[1] + h)
+                cv2.rectangle(frame, top_left, bottom_right, (0, 0, 255), 2)
+                # break
 
             ret, buffer = cv2.imencode('.jpg', frame)
             frame = buffer.tobytes()
@@ -84,12 +92,12 @@ def video_feed():
 @app.route("/mk")
 def winner():
     frame = None  # Initialize frame to avoid UnboundLocalError
-    threshold = 0.68
+    threshold = 0.70
 
     current_directory = os.path.dirname(os.path.abspath(__file__))
     video_path = os.path.join(
         current_directory, "video", "Streetfighter6test.mp4")
-    template_path = os.path.join(current_directory, "assets", "WON.png")
+    template_path = os.path.join(current_directory, "assets", "WONSF6.png")
 
     processor = ImageProcessor(template_path, threshold)
     result = {"winner": "No Winner"}
@@ -98,8 +106,8 @@ def winner():
     while True:
         ret, frame = cap.read()
         if not ret:
-            break
-        winner = processor.detect_winner(frame)
+            # break
+            winner = processor.detect_winner(frame)
         if winner:
             print(f"{winner} Side Wins")
             result = {"winner": winner}
